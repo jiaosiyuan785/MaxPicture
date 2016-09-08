@@ -58,6 +58,7 @@ compile 'com.github.maxpicture:gridviewimage:1.0.0'
 
 ### Avtivity
 ```java
+//photos中可以直接放入网络图片地址，本地图片地址，以及drawable中的图片
 ArrayList<String> photos = new ArrayList<String>();
 //控件初始化
 ImageGridView image_gridView = null;
