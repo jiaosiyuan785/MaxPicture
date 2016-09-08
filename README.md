@@ -79,12 +79,11 @@ image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
  * */
         image_gridView.setAdapter(new GridViewImageAdapter(MainActivity.this, photos));
 ```
+
+    后期还会有更新，包括图片放大全屏后的双击局部放大，双指缩放，单指移动等操作
 ----------
 
-#####后期还会有更新，包括图片放大全屏后的双击局部放大，双指缩放，单指移动等操作
-----------
-
-> Email:jiaosiyuan785@outlook.com
+> Email:jiaosiyuan785@outlook.com  <br/> 
 > Email:785220866@qq.com
 
 
