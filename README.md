@@ -12,6 +12,9 @@ Welcome to MaxPicture!
 
 ![image](https://github.com/jiaosiyuan785/MaxPicture/blob/master/gridviewimage/gif01.gif)
 
+----------
+
+
 
 ### SDK
 Sdk             | Version
@@ -76,8 +79,9 @@ image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
  * */
         image_gridView.setAdapter(new GridViewImageAdapter(MainActivity.this, photos));
 ```
+----------
 
-
+>后期还会有更新，包括图片放大全屏后的双击局部放大，双指缩放，单指移动等操作
 ----------
 
 > Email:jiaosiyuan785@outlook.com
