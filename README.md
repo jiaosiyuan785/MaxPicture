@@ -1,6 +1,6 @@
 Welcome to MaxPicture!
 ===================
-
+![中文版](https://github.com/jiaosiyuan785/MaxPicture/blob/master/Chinese.md)
 
 Can add multiple pictures and with the function of sliding around after click to enlarge the GridView 
 
