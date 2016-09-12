@@ -80,8 +80,8 @@ image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
  * */
         image_gridView.setAdapter(new GridViewImageAdapter(MainActivity.this, photos));
 ```
-
-    Later there will be updated to include image amplifier to amplify the full screen after  <br/> double-click local double refers to the scale, such as single refers to mobile operations 
+#### 
+     Later there will be updated to include image amplifier to amplify the full screen after double-click local double refers to the scale, such as single refers to mobile operations
 ----------
 
 > Email:jiaosiyuan785@outlook.com  <br/> 
