@@ -67,8 +67,10 @@ image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent in = new Intent();
                 in.setClass(MainActivity.this, MaxPictureActivity.class);
-                in.putExtra("pos", i);//Will pass, I click for the current position 
-                in.putStringArrayListExtra("imageAddress", photos);//Will pass,Photos to show the pictures of the collection address 
+                //Will pass, I click for the current position 
+                in.putExtra("pos", i);
+                //Will pass,Photos to show the pictures of the collection address 
+                in.putStringArrayListExtra("imageAddress", photos);
                 startActivity(in);
             }
         });
@@ -79,7 +81,7 @@ image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
         image_gridView.setAdapter(new GridViewImageAdapter(MainActivity.this, photos));
 ```
 
-    Later there will be updated to include image amplifier to amplify the full screen after double-click local double refers to the scale, such as single refers to mobile operations 
+    Later there will be updated to include image amplifier to amplify the full screen after  <br/> double-click local double refers to the scale, such as single refers to mobile operations 
 ----------
 
 > Email:jiaosiyuan785@outlook.com  <br/> 
