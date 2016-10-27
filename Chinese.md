@@ -1,11 +1,13 @@
 Welcome to MaxPicture!
 ===================
-![中文版](https://github.com/jiaosiyuan785/MaxPicture/blob/master/Chinese.md)
 
-Can add multiple pictures and with the function of sliding around after click to enlarge the GridView 
+
+可以放入多张图片并带有点击放大后左右滑动的GridView
 
 ----------
-Demo
+
+
+示例
 -------------
 
 ![image](https://github.com/jiaosiyuan785/MaxPicture/blob/master/gridviewimage/gif01.gif)
@@ -47,41 +49,39 @@ compile 'com.github.maxpicture:gridviewimage:1.0.0'
             android:verticalSpacing="10dp" />
     </ScrollView>
 ```
-####Annotation 
-    If need to join the ScrollView scroll bars, if you don't need to scroll bar, so you just need to use ImageGridView. 
-    
+####注释
+    如果需要滑动条就加入ScrollView,如果不需要滑动条，那么只需要使用ImageGridView即可.
+
 
 ----------
 
 
 ### Avtivity
 ```java
-//Pictures photos can directly into the network address, local address images, and images of drawable 
+//photos中可以直接放入网络图片地址，本地图片地址，以及drawable中的图片
 ArrayList<String> photos = new ArrayList<String>();
-//Controls the initialization 
+//控件初始化
 ImageGridView image_gridView = null;
 image_gridView=(ImageGridView)findViewById(R.id.image_gridView);
-//        OnClick
+//        单点事件
         image_gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent in = new Intent();
                 in.setClass(MainActivity.this, MaxPictureActivity.class);
-                //Will pass, I click for the current position 
-                in.putExtra("pos", i);
-                //Will pass,Photos to show the pictures of the collection address 
-                in.putStringArrayListExtra("imageAddress", photos);
+                in.putExtra("pos", i);//必传项,i为当前点击的位置
+                in.putStringArrayListExtra("imageAddress", photos);//必传项,photos为要显示的图片地址集合
                 startActivity(in);
             }
         });
 /**
- *  MainActivity.this:Context
- *  photos:Photos to show the pictures of the collection address
+ *  MainActivity.this:为当前界面上下文
+ *  photos:photos为要显示的图片地址集合
  * */
         image_gridView.setAdapter(new GridViewImageAdapter(MainActivity.this, photos));
 ```
-####Update
-     Later there will be updated to include image amplifier to amplify the full screen after double-click local double refers to the scale, such as single refers to mobile operations
+
+    后期还会有更新，包括图片放大全屏后的双击局部放大，双指缩放，单指移动等操作
 ----------
 
 > Email:jiaosiyuan785@outlook.com  <br/> 
