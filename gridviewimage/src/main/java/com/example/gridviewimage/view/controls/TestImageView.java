@@ -5,6 +5,7 @@ package com.example.gridviewimage.view.controls;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Handler;
@@ -46,6 +47,10 @@ public class TestImageView extends ImageView {
     private static final int DOUBLE_POINT_DISTANCE = 10;
     //    两指中心点
     private PointF centerPoint = new PointF();
+    //    第二手指头，第一次按下的时候的度数
+    float oldRotation = 0;
+    //    旋转度数
+    float rotation = 0;
     //    上下文
     Context context;
     //    用来区分单点还是双击的Handler
@@ -66,8 +71,18 @@ public class TestImageView extends ImageView {
     SleepThead sleepThead;
     //    初始化时的Matrix
     private Matrix mMatrix;
+    //    不改变的Matrix
+    private Matrix matrix;
     //    改变后的Matrix
     private Matrix currentMatrix = new Matrix();
+    //用来判断是否是第一次移动
+    private boolean firstMove = true;
+    //    基础Bitmap
+    Bitmap bitmap = null;
+    //    改变后的Bitmap
+    Bitmap currentBitmap = null;
+    //双指缩放时改变的scale
+    float uScale;
 
     public TestImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,8 +90,17 @@ public class TestImageView extends ImageView {
         mMatrix = new Matrix();
         mMatrix.set(getImageMatrix());
         currentMatrix = new Matrix();
+        matrix = new Matrix();
+        matrix.set(getImageMatrix());
     }
 
+    public void imageBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        this.currentBitmap = bitmap;
+        System.out.println(bitmap.getHeight() + "----------图片高度");
+        System.out.println(bitmap.getWidth() + "----------图片宽度");
+
+    }
 
     /*触摸事件*/
     @Override
@@ -87,6 +111,9 @@ public class TestImageView extends ImageView {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getRawX();
                 downY = event.getRawY();
+                if (Status == 5) {
+                    Status = 0;
+                }
                 break;
 //            单点触摸离开动作
             case MotionEvent.ACTION_UP:
@@ -94,9 +121,6 @@ public class TestImageView extends ImageView {
                 upY = event.getRawY();
                 if (Math.abs(upX - downX) > MAX_DISTANCE_FOR_CLICK || Math.abs(upY - downY) > MAX_DISTANCE_FOR_CLICK) {
                     Log.e("Tag", "当前点击按下和抬起大于了100");
-                    if(Status == 5){
-                        Status = 0;
-                    }
                 } else {
 //                   判断是否为第一次点击
                     if (Status == 0 || Status == 5) {
@@ -121,7 +145,9 @@ public class TestImageView extends ImageView {
                         if (eventX - downX < 10 || eventX - downX > -10 || eventY - downY < 10 || eventY - downY > -10) {
                             if (Double_Click == 0) {
 //                            第一次双击
-                                setScaleType(ScaleType.CENTER_CROP);
+//                                setScaleType(ScaleType.CENTER_CROP);
+                                mMatrix.set(getImageMatrix());
+                                DoubleClick(Click_Two_Scale, event, mMatrix);
                                 resetTheData();
                                 Double_Click = Click_Two_One;
                             } else if (Double_Click == Click_Two_One) {
@@ -148,8 +174,8 @@ public class TestImageView extends ImageView {
             case MotionEvent.ACTION_POINTER_DOWN:
                 old_distance = spacing(event);
                 Status = Zoom;
+                oldRotation = rotation(event);
                 if (old_distance > DOUBLE_POINT_DISTANCE) {
-                    currentMatrix.set(getImageMatrix());
                     midPoint(centerPoint, event);
                 }
                 break;
@@ -158,26 +184,62 @@ public class TestImageView extends ImageView {
                 Status = 5;
                 eventX = 0;
                 eventY = 0;
-                mMatrix.set(currentMatrix);
+                mMatrix.set(getImageMatrix());
+                setImageMatrix(mMatrix);
+                float[] value = new float[9];
+                getImageMatrix().getValues(value);
+                System.out.println(uScale + "------------------uScale");
+//                这里存在滑动速度过快图片消失问题
+                if (uScale < 1.0) {
+
+                    System.out.println(getWidth() * uScale + "---------------bitmap.getWidth()/uScale");
+                    if (bitmap.getWidth() * value[Matrix.MSCALE_X] < getWidth()) {
+                        mMatrix.set(matrix);
+                        mMatrix.setScale(0, 0, getWidth() / 2, getHeight() / 2);
+                        setImageMatrix(mMatrix);
+                        mMatrix.set(getImageMatrix());
+                        currentMatrix.set(getImageMatrix());
+                        setScaleType(ScaleType.FIT_CENTER);
+                        firstMove = true;
+                    }
+                } else if (uScale >= 1.0) {
+//                    这里存在判断不通过的问题
+                    if (value[Matrix.MSCALE_X] >= 1.0 && value[Matrix.MSCALE_X] <= 4.0) {
+                        DoubleClick(4.0f, event, matrix);
+                        resetTheData();
+                    }
+                }
+//                mMatrix.set(getImageMatrix());
+//                setImageMatrix(mMatrix);
                 break;
 //            触摸点移动动作
             case MotionEvent.ACTION_MOVE:
+                Log.e("Tag", "触摸点移动动作" + Status);
                 try {
                     sleepThead.interrupt();
                 } catch (NullPointerException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
-                Log.e("Tag", "触摸点移动动作");
+                setScaleType(ScaleType.MATRIX);
+                if (firstMove) {
+                    mMatrix.set(getImageMatrix());
+                    firstMove = false;
+                }
                 if (Status == 0 || Status == Click_Move) {
                     if (event.getPointerCount() == 1) {
                         SingleRefersToMobile(event);
                     }
                 } else if (Status == Zoom) {
                     new_distance = spacing(event);
+                    rotation = rotation(event) - oldRotation;
                     float scale = new_distance / old_distance;
+//                    设置最小缩小值和最大放大值
                     currentMatrix.set(mMatrix);
                     currentMatrix.postScale(scale, scale, centerPoint.x, centerPoint.y);// 缩放
+                    currentMatrix.postRotate(rotation, centerPoint.x, centerPoint.y);// 旋轉
+                    uScale = scale;
                     setImageMatrix(currentMatrix);
+
                 }
                 break;
 //            触摸动作取消,移动到控件之外时会被触发
@@ -185,9 +247,10 @@ public class TestImageView extends ImageView {
                 try {
                     sleepThead.interrupt();
                 } catch (NullPointerException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
                 Log.e("Tag", "触摸动作取消");
+                firstMove = true;
                 resetTheData();
                 break;
 //            触摸动作超出边界
@@ -195,7 +258,7 @@ public class TestImageView extends ImageView {
                 try {
                     sleepThead.interrupt();
                 } catch (NullPointerException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
                 Log.e("Tag", "触摸动作超出边界");
                 resetTheData();
@@ -218,6 +281,14 @@ public class TestImageView extends ImageView {
         return (float) Math.sqrt(x * x + y * y);
     }
 
+    // 取旋转角度
+    private float rotation(MotionEvent event) {
+        double delta_x = (event.getX(0) - event.getX(1));
+        double delta_y = (event.getY(0) - event.getY(1));
+        double radians = Math.atan2(delta_y, delta_x);
+        return (float) Math.toDegrees(radians);
+    }
+
     // 取手势中心点
     private void midPoint(PointF point, MotionEvent event) {
         float x = event.getX(0) + event.getX(1);
@@ -238,6 +309,7 @@ public class TestImageView extends ImageView {
             setImageMatrix(mMatrix);
             downX = event.getRawX();
             downY = event.getRawY();
+
         }
     }
 

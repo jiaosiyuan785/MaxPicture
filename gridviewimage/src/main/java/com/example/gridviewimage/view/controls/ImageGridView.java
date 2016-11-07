@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.GridView;
 
 /**
- * Created by Administrator on 2016/5/29.
+ * Created by Kate on 2016/5/29.
  */
 public class ImageGridView extends GridView {
     public ImageGridView(Context context, AttributeSet attrs) {
