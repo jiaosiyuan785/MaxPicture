@@ -10,14 +10,17 @@ import android.widget.TextView;
 
 import com.example.gridviewimage.R;
 import com.example.gridviewimage.view.adapter.ImagePagerAdapter;
+import com.example.gridviewimage.view.controls.ImageViewPager;
 
 import java.util.ArrayList;
-
+/**
+ * Created by Kate on 2016/5/29.
+ */
 public class MaxPictureActivity extends Activity {
     private TextView text_num;
     private int pos = 1;
     private ArrayList<String> imageList;
-    ViewPager pager = null;
+    ImageViewPager pager = null;
     ArrayList<View> viewContainter = new ArrayList<View>();
 
     @Override
@@ -28,19 +31,15 @@ public class MaxPictureActivity extends Activity {
         initView();
     }
 
-    /*获取上个界面传递过来的数据*/
     private void getIntentValue() {
         pos = getIntent().getIntExtra("pos", 0) + 1;
         imageList = getIntent().getStringArrayListExtra("imageAddress");
     }
 
-    /*初始化控件，设置初始数据*/
     private void initView() {
-        pager = (ViewPager) this.findViewById(R.id.viewpager);
+        pager = (ImageViewPager) this.findViewById(R.id.viewpager);
         text_num = (TextView) findViewById(R.id.text_num);
-//        设置默认显示
         text_num.setText(pos + "/" + imageList.size());
-//        添加图片到viewpage的集合中
         for (int i = 0; i < imageList.size(); i++) {
             viewContainter.add(LayoutInflater.from(this).inflate(R.layout.viewpager_page, null));
         }
@@ -51,7 +50,6 @@ public class MaxPictureActivity extends Activity {
     }
 
 
-    /*OnPageChangeListener实现*/
     private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
         @Override
@@ -59,7 +57,6 @@ public class MaxPictureActivity extends Activity {
 
         }
 
-        //position为当前界面所在位置
         @Override
         public void onPageSelected(int position) {
             text_num.setText(position + 1 + "/" + imageList.size());

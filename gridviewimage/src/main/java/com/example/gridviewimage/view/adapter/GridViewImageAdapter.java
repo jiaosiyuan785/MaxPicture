@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.gridviewimage.R;
@@ -15,20 +14,32 @@ import com.example.gridviewimage.R;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/5/29.
+ * Created by Kate on 2016/5/29.
  */
 public class GridViewImageAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<String> gridItemList;
     private Context context;
+    private int height, width;
 
+    /**
+     * width:ImageView自定义宽度
+     * height:ImageView自定义高度
+     */
+    public GridViewImageAdapter(Context context, List<String> list, int width, int height) {
+        super();
+        this.gridItemList = list;
+        inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.width = width;
+        this.height = height;
+    }
 
     public GridViewImageAdapter(Context context, List<String> list) {
         super();
         this.gridItemList = list;
         inflater = LayoutInflater.from(context);
         this.context = context;
-
     }
 
     @Override
@@ -58,6 +69,12 @@ public class GridViewImageAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.image = (ImageView) convertView.findViewById(R.id.image);
             viewHolder.image.setAdjustViewBounds(false);//设置边界对齐
+            if (height != 0 && width != 0) {
+                ViewGroup.LayoutParams params = viewHolder.image.getLayoutParams();
+                params.height = height;
+                params.width = width;
+                viewHolder.image.setLayoutParams(params);
+            }
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
